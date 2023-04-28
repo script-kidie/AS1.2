@@ -2,17 +2,29 @@ from src.state import State
 
 
 class Maze:
-    def __init__(self, states: dict[str:State], agent_coordinate: tuple[int, int]):
+    def __init__(self, states: dict[str:State], agent_state: State):
         self.states = states
         self.agent_action: tuple[int, int]
-        self.agent_coordinate = agent_coordinate
+        self.agent_state = agent_state
         self.actions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
 
     def step(self, state: tuple[int, int], action: tuple[int, int]) -> State:
+        """
+        determines the next state if a action would take place
+        :param state: the coordinate of a state
+        :param action: the action the agent wants to take
+        :return: the state the agent would land in
+        """
         try:
             return self.states[f"{tuple(map(sum,zip(state, action)))}"]
         except KeyError:
             return self.states[f"{state}"]
 
-    def get_agent_state(self) -> int:
-        return self.agent_coordinate
+    def get_agent_state(self) -> State:
+        """
+        :return: the State the agent is currently in
+        """
+        return self.agent_state
+
+    def __str__(self):
+        print(f"agent location = {self.agent_state.coordinate}")
