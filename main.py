@@ -24,9 +24,13 @@ maze_states_dict = {"(0, 0)": State(-1, (0, 0), False),
                     "(3, 3)": State(-1, (3, 3), False)
                     }
 
-main_maze = Maze(maze_states_dict, (3, 2))
+main_maze = Maze(maze_states_dict, maze_states_dict["(2, 3)"])
 
-main_agent = Agent(main_maze, greedy_policy, maze_states_dict["(2, 3)"])
+main_agent = Agent(main_maze, greedy_policy)
 
 main_agent.value_iteration()
+
+for i in range(10):
+    print(main_maze)
+    main_agent.act()
 

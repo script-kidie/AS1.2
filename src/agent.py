@@ -66,7 +66,7 @@ class Agent:
         """
         agent_state = self.maze.get_agent_state()
         action = self.policy.select_action(agent_state, self.maze)
-        self.maze.agent_state = self.maze.step(agent_state, action)
+        self.maze.agent_state = self.maze.step(agent_state.coordinate, action)
 
     def show_agent_valuation(self) -> None:
         """

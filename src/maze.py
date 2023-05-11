@@ -16,6 +16,7 @@ class Maze:
         :return: the state the agent would land in
         """
         try:
+            # adds the coordinate tuple of the input state to the action tuple
             return self.states[f"{tuple(map(sum,zip(state, action)))}"]
         except KeyError:
             return self.states[f"{state}"]
@@ -27,4 +28,4 @@ class Maze:
         return self.agent_state
 
     def __str__(self):
-        print(f"agent location = {self.agent_state.coordinate}")
+        return f"agent location = {self.agent_state}"
