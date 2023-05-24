@@ -1,13 +1,41 @@
+import random
+import time
 from src.state import State
 from src.policy import Policy
-from src.maze import Maze
 
 
 class Agent:
-
-    def __init__(self, maze: Maze, policy: Policy):
-        self.maze = maze
+    def __init__(self, maze_step, policy: Policy, agent_state: State, maze_viz):
+        self.maze_step = maze_step
         self.policy = policy
+        self.agent_state = agent_state
+        self.seen_states = {}
+        self.actions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+        self.maze_viz = maze_viz
+
+    def temporal_difference_learning(self, lr, dis) -> None:
+        """
+        executes temporal difference learning
+        :return:
+        """
+        for i in range(100):
+            while not self.agent_state.terminal:
+                s = self.agent_state
+
+                if str(s.coordinate) not in self.seen_states.keys():
+                    self.agent_state.value = random.randint(0, 40)
+
+                a = self.policy.select_action(s, self.actions, self.maze_step)
+                s_prime = self.maze_step(s.coordinate, a)
+
+                self.agent_state.value = s.value + lr * (s_prime.reward + dis * s_prime.value - s.value)
+                # update the last chosen action of that state
+                self.agent_state.last_chosen_action = str(a)
+                # update seen state within the agents memory of discovered states
+                self.seen_states[f"{s.coordinate}"] = self.agent_state
+                # update current state of the agent
+                self.maze_viz(self.seen_states)
+                self.agent_state = s_prime
 
     def value_iteration(self) -> None:
         """
@@ -18,7 +46,6 @@ class Agent:
         delta_is_smaller = True
 
         while delta_is_smaller:
-            self.show_agent_valuation()
             values = []
             policy_actions = []
             state_coordinates = []
@@ -64,16 +91,5 @@ class Agent:
         lets te agent move one step trough the maze, this step is based on what the policy deems best
         :return:
         """
-        agent_state = self.maze.get_agent_state()
-        action = self.policy.select_action(agent_state, self.maze)
-        self.maze.agent_state = self.maze.step(agent_state.coordinate, action)
-
-    def show_agent_valuation(self) -> None:
-        """
-        prints the reward, value and action chosen for every state the agent can see
-        :return:
-        """
-        print(f"{self.maze.states['(0, 0)']}{self.maze.states['(0, 1)']}{self.maze.states['(0, 2)']}{self.maze.states['(0, 3)']}")
-        print(f"{self.maze.states['(1, 0)']}{self.maze.states['(1, 1)']}{self.maze.states['(1, 2)']}{self.maze.states['(1, 3)']}")
-        print(f"{self.maze.states['(2, 0)']}{self.maze.states['(2, 1)']}{self.maze.states['(2, 2)']}{self.maze.states['(2, 3)']}")
-        print(f"{self.maze.states['(3, 0)']}{self.maze.states['(3, 1)']}{self.maze.states['(3, 2)']}{self.maze.states['(3, 3)']}\n")
+        action = self.policy.select_action(self.agent_state, self.actions, self.maze_step)
+        self.agent_state = self.maze_step(self.agent_state.coordinate, action)

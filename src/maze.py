@@ -1,31 +1,29 @@
+import random
+from src.agent import Agent
 from src.state import State
 
 
 class Maze:
-    def __init__(self, states: dict[str:State], agent_state: State):
+    def __init__(self, states: dict[str:State]):
         self.states = states
-        self.agent_action: tuple[int, int]
-        self.agent_state = agent_state
-        self.actions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
 
-    def step(self, state: tuple[int, int], action: tuple[int, int]) -> State:
+    def step(self, state_coordinate: tuple[int, int], action: tuple[int, int]) -> State:
         """
         determines the next state if a action would take place
-        :param state: the coordinate of a state
+        :param state_coordinate: the coordinate of a state
         :param action: the action the agent wants to take
         :return: the state the agent would land in
         """
         try:
             # adds the coordinate tuple of the input state to the action tuple
-            return self.states[f"{tuple(map(sum,zip(state, action)))}"]
+            return self.states[f"{tuple(map(sum,zip(state_coordinate, action)))}"]
         except KeyError:
-            return self.states[f"{state}"]
+            return self.states[f"{state_coordinate}"]
 
-    def get_agent_state(self) -> State:
-        """
-        :return: the State the agent is currently in
-        """
-        return self.agent_state
+    def visualize_agent_vision(self, seen_states: dict):
+        self.states.update(seen_states)
+        print(f"{self.states['(0, 0)']}{self.states['(0, 1)']}{self.states['(0, 2)']}{self.states['(0, 3)']}\n"
+              f"{self.states['(1, 0)']}{self.states['(1, 1)']}{self.states['(1, 2)']}{self.states['(1, 3)']}\n"
+              f"{self.states['(2, 0)']}{self.states['(2, 1)']}{self.states['(2, 2)']}{self.states['(2, 3)']}\n"
+              f"{self.states['(3, 0)']}{self.states['(3, 1)']}{self.states['(3, 2)']}{self.states['(3, 3)']}\n")
 
-    def __str__(self):
-        return f"agent location = {self.agent_state}"
