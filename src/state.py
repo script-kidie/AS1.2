@@ -5,7 +5,8 @@ class State:
         self.coordinate = coordinate
         self.terminal = terminal
         self.last_chosen_action = ""
-    def conver_action(self, action) -> str:
+
+    def convert_action(self, action) -> str:
         if self.last_chosen_action == "(-1, 0)":
             a = "^"
         elif self.last_chosen_action == "(1, 0)":
@@ -18,7 +19,8 @@ class State:
             a = "-"
 
         return f"{a}"
+
     def __str__(self):
-        return f"[V:{self.value} A:{self.conver_action(self.last_chosen_action)}]"
+        return f"[V:{self.value} A:{self.convert_action(self.last_chosen_action)}]"
 
 

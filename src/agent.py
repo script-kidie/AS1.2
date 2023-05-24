@@ -37,6 +37,9 @@ class Agent:
                 self.maze_viz(self.seen_states)
                 self.agent_state = s_prime
 
+    def sarsa(self, ):
+        pass
+
     def value_iteration(self) -> None:
         """
         executes value iteration on the maze for this agent
