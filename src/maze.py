@@ -1,5 +1,5 @@
 import random
-
+import time
 from typing import Tuple
 
 from src.agent import Agent
@@ -35,12 +35,24 @@ class Maze:
             for i in self.states:
                 self.states[i].value = random.randint(0, 40)
 
-    def visualize_agent_vision(self, seen_states: dict):
-        self.states.update(seen_states)
+    def visualize_agent_vision(self, state_values: dict) -> None:
+        tmp = []
+        for i in self.states:
+            tmp.append(self.states[i].value)
+
+        for key in state_values:
+            self.states[key].value = state_values[key]
+
         print(f"{self.states['(0, 0)']}{self.states['(0, 1)']}{self.states['(0, 2)']}{self.states['(0, 3)']}\n"
               f"{self.states['(1, 0)']}{self.states['(1, 1)']}{self.states['(1, 2)']}{self.states['(1, 3)']}\n"
               f"{self.states['(2, 0)']}{self.states['(2, 1)']}{self.states['(2, 2)']}{self.states['(2, 3)']}\n"
               f"{self.states['(3, 0)']}{self.states['(3, 1)']}{self.states['(3, 2)']}{self.states['(3, 3)']}\n")
+
+        counter = 0
+        for key in self.states:
+            self.states[key].value = tmp[counter]
+            counter += 1
+        time.sleep(2)
 
     def visualize_agent_qfunctions(self, agent_qtable: dict):
         self.maze_qtable.update(agent_qtable)

@@ -11,7 +11,7 @@ class Agent:
         self.policy = policy
         self.agent_state = agent_state
         self.starting_state = maze.states["(3, 2)"]
-        self.seen_states = {}
+        self.seen_states_values = {}
         self.q_table = {}
         self.actions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
         self.maze_viz = maze_viz
@@ -25,20 +25,36 @@ class Agent:
             while not self.agent_state.terminal:
                 s = self.agent_state
 
-                if str(s.coordinate) not in self.seen_states.keys():
-                    self.agent_state.value = random.randint(0, 40)
+                # initialize random value if it is the first time visiting the state
+                if str(s.coordinate) not in self.seen_states_values.keys():
+                    self.seen_states_values[str(s.coordinate)] = random.randint(-99, 99)
 
-                a = self.policy.select_action(s, self.actions, self.maze_step)
-                s_prime = self.maze_step(s.coordinate, a)
+                a = self.policy.select_action(input_state=s, actions=self.actions, maze_step=self.maze_step)
 
-                self.agent_state.value = s.value + lr * (s_prime.reward + dis * s_prime.value - s.value)
-                # update the last chosen action of that state
-                self.agent_state.last_chosen_action = str(a)
-                # update seen state within the agents memory of discovered states
-                self.seen_states[f"{s.coordinate}"] = self.agent_state
-                # update current state of the agent
-                self.maze_viz(self.seen_states)
-                self.agent_state = s_prime
+                self.act(a)
+
+                s_prime = self.agent_state
+
+                if str(s_prime.coordinate) not in self.seen_states_values.keys():
+                    if s_prime.terminal:
+                        self.seen_states_values[str(s_prime.coordinate)] = 0
+                    else:
+                        self.seen_states_values[str(s_prime.coordinate)] = random.randint(-99, 99)
+
+                s_value = self.seen_states_values[str(s.coordinate)]
+                s_prime_value = self.seen_states_values[str(s_prime.coordinate)]
+
+                # Td learning value calculation
+                new_value = round(s_value + lr * (s_prime.reward + dis * s_prime_value - s_value), 1)
+
+                # update seen state within the agents memory
+                self.seen_states_values[str(s.coordinate)] = new_value
+
+            # visualize agents td learning
+            self.maze_viz(self.seen_states_values)
+
+            # reset the agent position
+            self.agent_state = self.starting_state
 
     def add_to_qtable_if_needed(self, state):
         if str(state.coordinate) not in self.q_table.keys():
@@ -68,6 +84,34 @@ class Agent:
 
                 #  calculate new q value and input it to the q table
                 self.q_table[(str(s.coordinate))][a] = round(q_func1 + lr * (s_pr.reward + dis*q_func2 - q_func1), 1)
+                self.maze.visualize_agent_qfunctions(self.q_table)
+
+            self.agent_state = self.starting_state
+
+    def q_learning(self, lr, dis, eps):
+        for i in range(6000):
+            while not self.agent_state.terminal:
+                s = self.agent_state
+
+                self.add_to_qtable_if_needed(s)
+
+                a = self.policy.select_action(s, actions=["<", "v", "^", ">"], qtable=self.q_table, epsilon=eps)
+
+                a_conv = s.convert_str_to_action(a)
+
+                # let the agent take action
+                self.act(a_conv)
+
+                s_pr = self.agent_state
+                self.add_to_qtable_if_needed(s_pr)
+
+                best_act = self.policy.select_action(s_pr, actions=["<", "v", "^", ">"], qtable=self.q_table, epsilon=0)
+
+                q_func = self.q_table[(str(s.coordinate))][a]
+                arg_max = self.q_table[(str(s_pr.coordinate))][best_act]
+
+                #  calculate new q value and input it to the q table
+                self.q_table[(str(s.coordinate))][a] = round(q_func + lr * (s_pr.reward + dis*arg_max - q_func), 1)
 
             self.agent_state = self.starting_state
 

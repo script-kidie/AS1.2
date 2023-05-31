@@ -35,6 +35,6 @@ class State:
         return a
 
     def __str__(self):
-        return f"[V:{self.value} A:{self.convert_action_to_str(self.last_chosen_action)}]"
+        return "[{:<8} {:>2}]".format(f"Val:{self.value}", f"A:{self.convert_action_to_str(str(self.last_chosen_action))}")
 
 

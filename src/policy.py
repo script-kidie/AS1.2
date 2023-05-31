@@ -15,30 +15,30 @@ class Policy:
 
         # ---------- q table greedy policy  -----------#
         if qtable:
-            q_values = qtable[str(input_state.coordinate)]
-            max_qval = max(q_values.values())
+            q_functions = qtable[str(input_state.coordinate)]
+            max_qval = max(q_functions.values())
             highest_actions = []
 
             if epsilon >= rand_float:
                 chosen_action = random.choice(actions)
 
             else:
-                for action in q_values:
-                    if q_values[action] >= max_qval:
+                for action in q_functions:
+                    if q_functions[action] == max_qval:
                         highest_actions.append(action)
 
                 chosen_action = random.choice(highest_actions)
+
             return chosen_action
 
         # ---------- non q table greedy policy ------------ #
         else:
-            if epsilon > rand_float:
+            if epsilon >= rand_float:
                 chosen_action = random.choice(actions)
 
             else:
                 for action in actions:
                     state_after_action = maze_step(input_state.coordinate, action)
-
                     value = state_after_action.reward + (self.gamma * state_after_action.value)
 
                     if value > highest_value:
