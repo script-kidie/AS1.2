@@ -6,21 +6,35 @@ class State:
         self.terminal = terminal
         self.last_chosen_action = ""
 
-    def convert_action(self, action) -> str:
-        if self.last_chosen_action == "(-1, 0)":
+    def convert_action_to_str(self, action) -> str:
+        if action == "(-1, 0)":
             a = "^"
-        elif self.last_chosen_action == "(1, 0)":
+        elif action == "(1, 0)":
             a = "v"
-        elif self.last_chosen_action == "(0, 1)":
+        elif action == "(0, 1)":
             a = ">"
-        elif self.last_chosen_action == "(0, -1)":
+        elif action == "(0, -1)":
             a = "<"
         else:
             a = "-"
 
         return f"{a}"
 
+    def convert_str_to_action(self, string) -> tuple:
+        if string == "^":
+            a = (-1, 0)
+        elif string == "v":
+            a = (1, 0)
+        elif string == ">":
+            a = (0, 1)
+        elif string == "<":
+            a = (0, -1)
+        else:
+            raise ValueError("no viable action for this enviroment")
+
+        return a
+
     def __str__(self):
-        return f"[V:{self.value} A:{self.convert_action(self.last_chosen_action)}]"
+        return f"[V:{self.value} A:{self.convert_action_to_str(self.last_chosen_action)}]"
 
 
