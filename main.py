@@ -1,5 +1,6 @@
 import random
 
+import main
 from src.maze import Maze
 from src.policy import Policy
 from src.agent import Agent
@@ -46,12 +47,9 @@ main_maze = Maze(maze_states_dict, maze_q_table)
 
 main_agent = Agent(main_maze, main_maze.step, greedy_policy, maze_states_dict["(3, 2)"], main_maze.visualize_agent_vision)
 
-# main_agent.q_learning(1, 1.0, 0.1)
+# main_agent.sarsa(0.3, 0.9, 0.1)
 
-# main_maze.visualize_agent_qfunctions(main_agent.q_table)
+main_agent.q_learning(1, 0.9, 0.1)
 
-main_agent.value_iteration()
-
-main_maze.visualize_agent_vision(main_agent.seen_states_values)
-
-main_agent.temporal_difference_learning(1, 1)
+# main_agent.value_iteration()
+# main_agent.temporal_difference_learning(1, 1)

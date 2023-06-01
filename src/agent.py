@@ -22,6 +22,7 @@ class Agent:
         :return:
         """
         for i in range(100):
+            print(f"V===episode {i}===V")
             while not self.agent_state.terminal:
                 s = self.agent_state
 
@@ -84,9 +85,10 @@ class Agent:
 
                 #  calculate new q value and input it to the q table
                 self.q_table[(str(s.coordinate))][a] = round(q_func1 + lr * (s_pr.reward + dis*q_func2 - q_func1), 1)
-                self.maze.visualize_agent_qfunctions(self.q_table)
 
             self.agent_state = self.starting_state
+
+        self.maze.visualize_agent_qfunctions(self.q_table)
 
     def q_learning(self, lr, dis, eps):
         for i in range(6000):
@@ -114,6 +116,8 @@ class Agent:
                 self.q_table[(str(s.coordinate))][a] = round(q_func + lr * (s_pr.reward + dis*arg_max - q_func), 1)
 
             self.agent_state = self.starting_state
+
+        self.maze.visualize_agent_qfunctions(self.q_table)
 
     def value_iteration(self) -> None:
         """

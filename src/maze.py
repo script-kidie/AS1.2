@@ -46,7 +46,7 @@ class Maze:
         print(f"{self.states['(0, 0)']}{self.states['(0, 1)']}{self.states['(0, 2)']}{self.states['(0, 3)']}\n"
               f"{self.states['(1, 0)']}{self.states['(1, 1)']}{self.states['(1, 2)']}{self.states['(1, 3)']}\n"
               f"{self.states['(2, 0)']}{self.states['(2, 1)']}{self.states['(2, 2)']}{self.states['(2, 3)']}\n"
-              f"{self.states['(3, 0)']}{self.states['(3, 1)']}{self.states['(3, 2)']}{self.states['(3, 3)']}\n")
+              f"{self.states['(3, 0)']}{self.states['(3, 1)']}{self.states['(3, 2)']}{self.states['(3, 3)']}")
 
         counter = 0
         for key in self.states:
