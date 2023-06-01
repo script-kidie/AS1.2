@@ -1,2 +1,2 @@
-# AS1.2
+# AS
  Assignment for school 
